@@ -53,9 +53,6 @@
         <a id="{full_name}" class="anchor"/>
         <h2 class="{name()}">
             <xsl:value-of select="full_name"/>
-            <div class="to-top">
-                <a href="#top">jump to top</a>
-            </div>
         </h2>
 
         <div class="class">

@@ -8,15 +8,14 @@
     <h4 class="method {../@visibility}">
       <img src="{$root}images/icons/visibility_{../@visibility}.png" style="margin-right: 10px" alt="{@visibility}" title="{@visibility}"/>
       <xsl:value-of select="." />
-      <div class="to-top"><a href="#{../../name}">jump to class</a></div>
     </h4>
   </xsl:template>
 
   <xsl:template match="function/name">
+
     <h3 class="function {../@visibility}">
       <img src="{$root}images/icons/visibility_{../@visibility}.png" style="margin-right: 10px" alt="{@visibility}" title="{@visibility}"/>
       <xsl:value-of select="." />
-      <div class="to-top"><a href="#top">jump to top</a></div>
     </h3>
   </xsl:template>
 
@@ -43,39 +42,40 @@
 
   <xsl:template match="function|method">
     <a id="{../full_name}::{name}()" class="anchor" />
-    <div>
-        <xsl:attribute name="class">
-            <xsl:value-of select="concat(name(), ' ', @visibility)" />
-            <xsl:if test="inherited_from"> inherited_from </xsl:if>
-        </xsl:attribute>
 
-        <a href="#" class="gripper">
-            <img src="{$root}images/icons/arrow_right.png" />
-            <img src="{$root}images/icons/arrow_down.png" style="display: none;"/>
-        </a>
-
-        <code class="title"><img src="{$root}images/icons/{name()}.png" alt="{name()}" title="{name()}" /><xsl:if test="@visibility"><img src="{$root}images/icons/visibility_{@visibility}.png" style="margin-right: 5px" alt="{@visibility}"/></xsl:if><span class="highlight"><xsl:value-of select="name" /></span>
+        <code class="title">
+            <xsl:choose>
+                <xsl:when test="@visibility='private'">
+                    -<xsl:text> </xsl:text>
+                </xsl:when>
+                <xsl:when test="@visibility='protected'">
+                    #<xsl:text> </xsl:text></xsl:when>
+                <xsl:when test="@visibility='public'">
+                    +<xsl:text> </xsl:text>
+                </xsl:when>
+            </xsl:choose>
+            <span class="highlight"><xsl:value-of select="name" /></span>
             <span class="nb-faded-text">(<xsl:for-each select="argument"><xsl:if test="position() &gt; 1">, </xsl:if><xsl:variable name="variable_name" select="name" /><xsl:call-template name="implodeTypes"><xsl:with-param name="items" select="../docblock/tag[@name='param' and @variable=$variable_name]/type" /></xsl:call-template>&#160;<xsl:value-of select="$variable_name" /><xsl:if test="default != ''"> = <xsl:value-of select="default" disable-output-escaping="yes" /></xsl:if></xsl:for-each>)</span> : <xsl:if test="not(docblock/tag[@name='return'])">void</xsl:if><xsl:apply-templates select="docblock/tag[@name='return']" />
         </code>
 
         <div class="description">
             <xsl:if test="@static='true'">
-                <span class="attribute">static</span>
+                <span>static</span>
             </xsl:if>
 
             <xsl:if test="@final='true'">
-                <span class="attribute">final</span>
+                <span>final</span>
             </xsl:if>
 
             <xsl:if test="@abstract='true'">
-                <span class="attribute">abstract</span>
+                <span>abstract</span>
             </xsl:if>
 
             <xsl:if test="inherited_from">
-                <span class="attribute">inherited</span>
+                <span>inherited</span>
             </xsl:if>
 
-            <p class="short_description">
+            <p>
                 <xsl:value-of select="docblock/description" disable-output-escaping="yes" />
             </p>
 
@@ -97,7 +97,7 @@
 
             <xsl:if test="count(argument) > 0">
                 <strong>Parameters</strong>
-                <table class="argument-info">
+                <table>
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -111,7 +111,7 @@
 
             <xsl:if test="docblock/tag[@name = 'return'] != '' and docblock/tag[@name = 'return']/@type != 'void'">
                 <strong>Returns</strong>
-                <table class="argument-info">
+                <table>
                     <thead>
                         <tr><th>Type</th><th>Description</th></tr>
                     </thead>
@@ -128,7 +128,7 @@
 
             <xsl:if test="count(docblock/tag[@name = 'throws'])">
                 <strong>Throws</strong>
-                <table class="argument-info">
+                <table>
                     <thead>
                         <tr>
                             <th>Exception</th>
@@ -150,9 +150,7 @@
                 </dl>
             </xsl:if>
         </div>
-      <div class="clear"></div>
-    </div>
-
+<hr/>
   </xsl:template>
 
 </xsl:stylesheet>

@@ -13,14 +13,19 @@
                 <xsl:if test="docblock/tag[@name='magic']"> magic </xsl:if>
             </xsl:attribute>
 
-            <a href="#" class="gripper">
-                <img src="{$root}images/icons/arrow_right.png" alt="&gt;"/>
-                <img src="{$root}images/icons/arrow_down.png" alt="V" style="display: none;"/>
-            </a>
-
             <code class="title">
-                <img src="{$root}images/icons/property.png" alt="Property"/>
-                <xsl:if test="@visibility"><img src="{$root}images/icons/visibility_{@visibility}.png" style="margin-right: 5px" alt="{@visibility}"/></xsl:if><xsl:if test="docblock/tag[@name='var']/@type"><xsl:apply-templates select="docblock/tag[@name='var']/@type"/>&#160;</xsl:if><span class="highlight"><xsl:value-of select="name"/></span><xsl:if test="default[.!='']"> = <xsl:value-of select="default"/></xsl:if>
+
+                <xsl:choose>
+                    <xsl:when test="@visibility='private'">
+                        -<xsl:text> </xsl:text><xsl:if test="docblock/tag[@name='var']/@type"><xsl:apply-templates select="docblock/tag[@name='var']/@type"/>&#160;</xsl:if><span class="highlight"><xsl:value-of select="name"/></span><xsl:if test="default[.!='']"> = <xsl:value-of select="default"/></xsl:if>
+                    </xsl:when>
+                    <xsl:when test="@visibility='protected'">
+                        #<xsl:text> </xsl:text><xsl:if test="docblock/tag[@name='var']/@type"><xsl:apply-templates select="docblock/tag[@name='var']/@type"/>&#160;</xsl:if><span class="highlight"><xsl:value-of select="name"/></span><xsl:if test="default[.!='']"> = <xsl:value-of select="default"/></xsl:if>
+                    </xsl:when>
+                    <xsl:when test="@visibility='public'">
+                        +<xsl:text> </xsl:text><xsl:if test="docblock/tag[@name='var']/@type"><xsl:apply-templates select="docblock/tag[@name='var']/@type"/>&#160;</xsl:if><span class="highlight"><xsl:value-of select="name"/></span><xsl:if test="default[.!='']"> = <xsl:value-of select="default"/></xsl:if>
+                    </xsl:when>
+                </xsl:choose>
             </code>
 
             <div class="description">
